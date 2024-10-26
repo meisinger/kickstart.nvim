@@ -125,6 +125,9 @@ vim.opt.breakindent = true
 -- Save undo history
 vim.opt.undofile = true
 
+-- Turn off swapfile
+vim.opt.swapfile = false
+
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
@@ -467,6 +470,8 @@ require('lazy').setup({
 
       -- Allows extra capabilities provided by nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
+
+      { 'Hoffs/omnisharp-extended-lsp.nvim', lazy = true },
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -661,6 +666,8 @@ require('lazy').setup({
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
+
+          ['omnisharp'] = require('kickstart.plugins.lsp.omnisharp').setup,
         },
       }
     end,

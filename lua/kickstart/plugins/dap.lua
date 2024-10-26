@@ -32,6 +32,7 @@ return {
       config = function(_, opts)
         local dap = require 'dap'
         local dapui = require 'dapui'
+
         dapui.setup(opts)
         dap.listeners.after.event_initialized['dapui_config'] = function()
           dapui.open {}
@@ -42,6 +43,12 @@ return {
         dap.listeners.before.event_exited['dapui_config'] = function()
           dapui.close {}
         end
+
+        dap.adapters.coreclr = {
+          type = 'executable',
+          command = vim.fn.exepath 'netcoredbg',
+          args = { '--interpreter=vscode' },
+        }
 
         dap.configurations.cs = {
           {
@@ -65,6 +72,7 @@ return {
       'theHamsta/nvim-dap-virtual-text',
       opts = {},
     },
+    --[[
     {
       'jay-babu/mason-nvim-dap.nvim',
       dependencies = {
@@ -78,6 +86,8 @@ return {
         ensure_installed = { 'coreclr' },
       },
     },
+    ]]
+    --
   },
   keys = {
     {
@@ -100,13 +110,6 @@ return {
         require('dap').continue()
       end,
       desc = 'Continue',
-    },
-    {
-      '<leader>da',
-      function()
-        require('dap').continue { before = get_args }
-      end,
-      desc = 'Run with Args',
     },
     {
       '<leader>dC',
@@ -134,14 +137,14 @@ return {
       function()
         require('dap').down()
       end,
-      desc = 'Down',
+      desc = 'Down Stacktrace',
     },
     {
       '<leader>dk',
       function()
         require('dap').up()
       end,
-      desc = 'Up',
+      desc = 'Up Stacktrace',
     },
     {
       '<leader>dl',
