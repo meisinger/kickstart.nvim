@@ -43,9 +43,10 @@ return {
           vim.keymap.set('n', '<S-F5>', function ()
             dap.disconnect { terminateDebuggee = false }
           end, { desc = 'Debug: Disconnect' })
-          vim.keymap.set('n', '<F10>', dap.step_over, { desc = 'Debug; Step Over' })
-          vim.keymap.set('n', '<F11>', dap.step_into, { desc = 'Debug: Step Into' })
-          vim.keymap.set('n', '<F12>', dap.setp_out, { desc = 'Debug: Step Out' })
+          vim.keymap.set('n', '<F7>', dap.step_into, { desc = 'Debug: Step Into' })
+          vim.keymap.set('n', '<F8>', dap.step_over, { desc = 'Debug; Step Over' })
+          vim.keymap.set('n', '<F9>', dap.step_out, { desc = 'Debug: Step Out' })
+          vim.keymap.set('n', '<F10>', dap.continue, { desc = 'Debug: Continue' })
           vim.keymap.set('n', '<leader>dc', dap.run_to_cursor, { desc = 'Debug: Run to Cursor' })
           vim.keymap.set('n', '<leader>dr', dap.repl.toggle, { desc = 'Debug: Toggle REPL' })
           vim.keymap.set('n', '<leader>dt', dap.terminate, { desc = 'Debug: Terminate' })
@@ -57,9 +58,10 @@ return {
           if not debug_keys_set then return end
 
           pcall(vim.keymap.del, 'n', '<S-F5>')
+          pcall(vim.keymap.del, 'n', '<F7>')
+          pcall(vim.keymap.del, 'n', '<F8>')
+          pcall(vim.keymap.del, 'n', '<F9>')
           pcall(vim.keymap.del, 'n', '<F10>')
-          pcall(vim.keymap.del, 'n', '<F11>')
-          pcall(vim.keymap.del, 'n', '<F12>')
           pcall(vim.keymap.del, 'n', '<leader>dc')
           pcall(vim.keymap.del, 'n', '<leader>dr')
           pcall(vim.keymap.del, 'n', '<leader>dt')
@@ -92,7 +94,7 @@ return {
 
         dap.adapters.coreclr = {
           type = 'executable',
-          command = vim.fn.exepath 'netcoredbg',
+          command = vim.fn.exepath('netcoredbg'),
           args = { '--interpreter=vscode' },
         }
 
@@ -104,16 +106,6 @@ return {
             program = function()
               return vim.fn.input('Path to dll:', vim.fn.getcwd() .. '/bin/Debug', 'file')
             end,
-          },
-          {
-            type = 'coreclr',
-            name = 'Unit Test - dotnet core',
-            request = 'launch',
-            program = 'dotnet',
-            args = { 'test', '--no-build', '--verbosity', 'normal' },
-            cwd = '${workspaceFolder}',
-            stopAtEntry = false,
-            console = 'internalConsole',
           },
           {
             type = 'coreclr',
@@ -160,14 +152,14 @@ return {
         desc = 'Debug: Start/Continue',
       },
       {
-        '<F9>',
+        '<leader>db',
         function()
           dap.toggle_breakpoint()
         end,
         desc = 'Debug: Toggle Breakpoint',
       },
       {
-        '<S-F9>',
+        '<leader>dn',
         function()
           dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
         end,
